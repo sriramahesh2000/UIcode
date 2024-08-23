@@ -1,0 +1,43 @@
+import pypandoc
+from google.colab import files
+import docx
+
+# Example translation function (replace this with your actual translation logic)
+def translate_text(text):
+    # Simulated translation (replace this with actual translation logic)
+    return f"Translated: {text}"
+
+# Step 1: Convert the document using pypandoc
+input_file = '/content/Vulnerability Assessment and Penetration Testing Policy 1.1.docx'
+output_file = 'recreated_document.docx'
+output = pypandoc.convert_file(input_file, 'docx', outputfile=output_file)
+assert output == ""  # Ensure the conversion was successful
+
+# Step 2: Open the converted document with python-docx
+doc = docx.Document(output_file)
+
+# Step 3: Translate and replace each run in paragraphs and tables while retaining style
+
+# Handling paragraphs outside of tables
+for para in doc.paragraphs:
+    for run in para.runs:
+        original_text = run.text
+        translated_text = translate_text(original_text)
+        run.text = translated_text  # Retain the original style while replacing the text
+
+# Handling tables
+for table in doc.tables:
+    for row in table.rows:
+        for cell in row.cells:
+            for para in cell.paragraphs:
+                for run in para.runs:
+                    original_text = run.text
+                    translated_text = translate_text(original_text)
+                    run.text = translated_text  # Retain the original style while replacing the text
+
+# Step 4: Save the updated document
+updated_file = 'updated_document.docx'
+doc.save(updated_file)
+
+# Step 5: Download the updated document
+files.download(updated_file)
